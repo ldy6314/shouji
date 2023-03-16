@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import LoginView from '@/components/LoginView'
 import RegistVue from '@/components/RegistVue'
 
@@ -10,6 +9,7 @@ import ShunJian from "@/components/ShunJian"
 import TeSe from '@/components/TeSe'
 import ZongJie from '@/components/ZongJie'
 import JiHua from '@/components/JiHua'
+import JianJie from '@/components/JianJie'
 
 
 
@@ -17,25 +17,13 @@ Vue.use(VueRouter)
 
 const routes = [{
         path: '/',
-        name: 'home',
-        component: HomeView
-    },
-    {
-        path: '/about',
-        name: 'about',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () =>
-            import ( /* webpackChunkName: "about" */ '../views/AboutView.vue')
-    },
-
-    {
+        redirect: '/gailan'
+    }, {
         path: '/gailan',
         name: 'gailan',
         component: GaiLan
-
     },
+
     {
         path: '/login',
         name: 'login',
@@ -72,7 +60,14 @@ const routes = [{
         path: '/tese',
         name: 'tese',
         component: TeSe
+    },
+    {
+        path: '/jianjie',
+        name: 'jianjie',
+        component: JianJie
     }
+
+
 ]
 
 const router = new VueRouter({

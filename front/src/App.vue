@@ -9,6 +9,7 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item to="/gailan">概览</b-nav-item>
+          <b-nav-item to="/jianjie">课程简介</b-nav-item>
           <b-nav-item to="/jihua">教学计划</b-nav-item>
           <b-nav-item to="/jiaoan">课时教案</b-nav-item>
           <b-nav-item to="/zongjie">教学总结</b-nav-item>

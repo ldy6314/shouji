@@ -1,6 +1,6 @@
 <template>
-  <div>
-    zongjie
+  <div id = 'jiajie'>
+    简介
   </div>
 </template>
 
