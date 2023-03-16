@@ -3,12 +3,16 @@ import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '@/components/LoginView'
 import RegistVue from '@/components/RegistVue'
-import WordsVue from '@/components/WordsVue'
-import PastVue from '@/components/PastVue'
-import TotVue from '@/components/TotVue'
-import CompareVue from '@/components/CompareVue'
-import AddVue from '@/components/AddVue'
-import TestVue from '@/components/TestVue'
+
+import GaiLan from '@/components/GaiLan'
+import JiaoAn from "@/components/JiaoAn"
+import ShunJian from "@/components/ShunJian"
+import TeSe from '@/components/TeSe'
+import ZongJie from '@/components/ZongJie'
+import JiHua from '@/components/JiHua'
+
+
+
 Vue.use(VueRouter)
 
 const routes = [{
@@ -25,6 +29,13 @@ const routes = [{
         component: () =>
             import ( /* webpackChunkName: "about" */ '../views/AboutView.vue')
     },
+
+    {
+        path: '/gailan',
+        name: 'gailan',
+        component: GaiLan
+
+    },
     {
         path: '/login',
         name: 'login',
@@ -35,38 +46,32 @@ const routes = [{
         path: '/regist',
         name: 'regist',
         component: RegistVue
+
     },
     {
-        path: '/myword',
-        name: 'word',
-        component: WordsVue,
-        children: [{
-                path: 'tot',
-                name: 'tot',
-                component: TotVue
-            },
-            {
-                path: 'past',
-                name: 'past',
-                component: PastVue
-            },
-            {
-                path: 'compare',
-                name: 'compare',
-                component: CompareVue
-            },
-            {
-                path: 'add',
-                name: 'add',
-                component: AddVue
-            },
-            {
-                path: 'test',
-                name: 'test',
-                component: TestVue
-            },
-
-        ]
+        path: '/jiaoan',
+        name: 'jiaoan',
+        component: JiaoAn
+    },
+    {
+        path: '/jihua',
+        name: 'jihua',
+        component: JiHua
+    },
+    {
+        path: '/shunjian',
+        name: 'shunjian',
+        component: ShunJian
+    },
+    {
+        path: '/zongjie',
+        name: 'zongjie',
+        component: ZongJie
+    },
+    {
+        path: '/tese',
+        name: 'tese',
+        component: TeSe
     }
 ]
 

@@ -1,7 +1,5 @@
 <template>
-  <div>
-        科学记忆英语单词
-  </div>
+  <div></div>
 </template>
 
 <script>

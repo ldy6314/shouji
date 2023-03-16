@@ -8,14 +8,17 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item to="/">首页</b-nav-item>
-          <b-nav-item to="/myword">资料上传</b-nav-item>
-          <b-nav-item to="/myword">资料管理</b-nav-item>
+          <b-nav-item to="/gailan">概览</b-nav-item>
+          <b-nav-item to="/jihua">教学计划</b-nav-item>
+          <b-nav-item to="/jiaoan">课时教案</b-nav-item>
+          <b-nav-item to="/zongjie">教学总结</b-nav-item>
+          <b-nav-item to="/tese">特色活动</b-nav-item>
+          <b-nav-item to="/shunjian">精彩瞬间</b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-          <b-nav-item to="/regist">注册</b-nav-item>
+          <!-- <b-nav-item to="/regist">注册</b-nav-item> -->
           <b-nav-item to="/login">登录</b-nav-item>
         </b-navbar-nav>
       </b-collapse>

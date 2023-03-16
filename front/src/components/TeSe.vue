@@ -1,7 +1,5 @@
 <template>
-  <div>
-    compare
-  </div>
+  <div></div>
 </template>
 
 <script>
