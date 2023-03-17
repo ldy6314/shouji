@@ -1,6 +1,6 @@
 <template>
   <div>
-    tese
+    特色
   </div>
 </template>
 
