@@ -1,16 +1,59 @@
 <template>
   <div>
-      <el-row>
-          <el-col :span="8">
-            <el-upload>
-                
-            </el-upload>
-          </el-col>
-          <el-col :span="12"></el-col>
-      </el-row>
+    <el-row>
+      <el-col :span="6" offset="3">
+        <el-card header="头像">
+          <el-upload
+            class="avatar-uploader"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card header="教师简介">
+          <el-input
+            type="textarea"
+            :rows="8"
+            placeholder="请输入内容"
+            v-model="textarea"
+          >
+          </el-input>
+        </el-card>
+      </el-col>
+       <el-col :span="6">
+        <el-card header="社团简介">
+          <el-input
+            type="textarea"
+            :rows="8"
+            placeholder="请输入内容"
+            v-model="textarea2"
+          >
+          </el-input>
+        </el-card>
+      </el-col>
+     
+    </el-row>
+    <el-row>
+      <el-col :span="1" offset="11">
+        <el-button>提交</el-button>
+      </el-col>
+    </el-row>
+ 
   </div>
 </template>
 
+<script>
+export default {
+  textarea:"",
+  textarea2:""
+};
+</script>
 <style>
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
@@ -35,35 +78,7 @@
   height: 178px;
   display: block;
 }
-#textarea{
-height: 178px;
+.el-card{
+  height: 300px;
 }
 </style>
-
-<script>
-export default {
-  data() {
-    return {
-      imageUrl: "",
-      textarea: "",
-    };
-  },
-  methods: {
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
-    },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 10;
-
-      if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
-      }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-      }
-      return isJPG && isLt2M;
-    },
-  },
-};
-</script>
