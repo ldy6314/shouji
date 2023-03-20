@@ -15,15 +15,19 @@
   <el-menu-item index="/jianjie">社团简介</el-menu-item>
   <el-menu-item index="/jihua" >社团计划</el-menu-item>
    <el-menu-item index="/jiaoan" >课时教案</el-menu-item>
+   <el-menu-item index="/zongjie" >社团总结</el-menu-item>
    <el-menu-item index="/shunjian" >精彩瞬间</el-menu-item>
    <el-menu-item index="/tese" >特色活动</el-menu-item>
     <el-menu-item index="/login"  class="login">登录</el-menu-item>
 </el-menu>
 </el-col>
 </el-row>
-<router-view>
+<el-row>
+  <router-view>
   显示区
 </router-view>
+</el-row>
+
   </div>
 </template>
 <script>
