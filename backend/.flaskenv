@@ -1,0 +1,3 @@
+FLASK_APP=server
+FLASK_ENV=development
+SECRET_KEY=secret_string

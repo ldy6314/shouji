@@ -17,7 +17,7 @@
   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
 </el-upload>
   <h3>
-    特色活动照片
+    特色活动照片（过程及成果）
   </h3>
   <el-upload
   action="http://127.0.0.1:5000/upload_pic"
@@ -37,7 +37,7 @@
 export default {
     data() {
       return {
-        fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}]
+        fileList: []
         ,dialogImageUrl: '',
         dialogVisible: false,
         disabled: false
