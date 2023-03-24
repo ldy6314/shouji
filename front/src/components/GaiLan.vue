@@ -24,7 +24,7 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button
+          <!-- <el-button
             size="mini"
             type="primary"
             @click="handleEdit(scope.$index, scope.row)"
@@ -35,7 +35,10 @@
             type="danger"
             @click="handleDelete(scope.$index, scope.row)"
             >删除</el-button
-          >
+          > -->
+          <i class="el-icon-download"  type="primary"
+            @click="handleEdit(scope.$index, scope.row)"></i>
+            <i class="el-icon-delete"  @click="handleDelete(scope.$index, scope.row)"></i>
         </template>
       </el-table-column>
     </el-table>
@@ -53,7 +56,7 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button
+          <!-- <el-button
             size="mini"
             type="primary"
             @click="handleEdit(scope.$index, scope.row)"
@@ -64,7 +67,10 @@
             type="danger"
             @click="handleDelete(scope.$index, scope.row)"
             >删除</el-button
-          >
+          > -->
+          <i class="el-icon-download"  type="primary"
+            @click="handleEdit(scope.$index, scope.row)"></i>
+            <i class="el-icon-delete"  @click="handleDelete(scope.$index, scope.row)"></i>
         </template>
       </el-table-column>
     </el-table>
@@ -190,6 +196,10 @@ export default {
   min-height: 100%;
   height: 100%;
 }
+.el-card-define:hover {
+  background-color: darkgray;
+  opacity: 50%;
+}
 .el-card-define:hover .btdiv {
   display: block;
 }
@@ -202,6 +212,5 @@ export default {
 }
 i {
   font-size: 30px;
-  color: blue;
 }
 </style>
