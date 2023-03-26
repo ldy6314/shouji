@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, g, send_file
+from flask import Blueprint, jsonify, request, g, send_file, make_response
 from .models import People
 from .models import User
 from .extentions import db
@@ -6,6 +6,7 @@ from functools import wraps
 from .utils import generate_token, decode_token
 
 bp = Blueprint('bp', __name__)
+
 
 
 @bp.route('/')
@@ -61,17 +62,6 @@ def login():
         return jsonify('账号或者密码错误'), 401
 
 
-@bp.route('/get_all')
-@login_required
-def get_all():
-    res = People.query.all()
-    print(res)
-    res = list(map(lambda x: {'id': x.id, 'name': x.name, 'age': x.age}, res))
-    print(res)
-    return jsonify(
-        res
-    )
-
 
 @bp.route('/logout')
 def logout():
@@ -79,50 +69,6 @@ def logout():
     g.login_message = '未登录'
     print('login out success')
     return jsonify({'message': '登出成功'}), 200
-
-
-@bp.route('/clear_all')
-def clear_all():
-    persons = People.query.all()
-    for person in persons:
-        db.session.delete(person)
-    db.session.commit()
-    return 'clear'
-
-
-@bp.route('/add_student', methods=['POST'])
-def add_student():
-    data = request.get_json()
-    name, age = data['name'], data['age']
-    response = dict()
-    res = People.query.filter(People.name == name).first()
-    if not res:
-        person = People(name=name, age=age)
-        db.session.add(person)
-        db.session.commit()
-    response['result'] = 'fail' if res else 'success'
-
-    return jsonify(response)
-
-
-@bp.route('/delete/<int:person_id>', methods=['GET'])
-def delete_person(person_id):
-    res = People.query.filter_by(id=person_id).first()
-    db.session.delete(res)
-    db.session.commit()
-    return jsonify(res.name)
-
-
-@bp.route('/updateInfo/<int:person_id>', methods=['POST'])
-def update_info(person_id):
-    data = request.get_json()
-    _, age = data['name'], data['age']
-    response = dict()
-    res = People.query.filter(People.id == person_id).first()
-    response['result'] = 'success' if res else 'fail'
-    res.age = age
-    db.session.commit()
-    return jsonify(response)
 
 
 @bp.route('/get_img_list/', methods=['GET'])

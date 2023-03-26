@@ -10,6 +10,10 @@ class People(db.Model):
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    role = db.Column(db.Integer)
+    subject_name = db.Column(db.String(50), unique=True)
+    teacher_info = db.Column(db.String(500))
+    subject_info = db.Column(db.String(500))
     username = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(128))
 

@@ -32,6 +32,8 @@
 
 <script>
 import _axios from '@/utils/_axios'
+import {Message} from 'element-ui'
+import router from '@/router'
 export default {
     data() {
       return {
@@ -59,9 +61,26 @@ export default {
         // 为表单绑定验证功能
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            _axios.post(,)
+            let data ={
+               account:this.form.username,
+               password:this.form.password
+            }
+            _axios.post('http://127.0.0.1:5000/login', data).then(
+              success=>{
+                localStorage.setItem('token', success.token)
+                localStorage.setItem('subject_name', success.subject_name)
+               router.push('/')
+                this.$store.commit("LOGIN",{'token': success.token})
+              },
+              err=>{
+                Message({
+                  'message': err,
+                  'type': "error"
+                })
+              }
+            )
             // 使用 vue-router 路由到指定页面，该方式称之为编程式导航
-            this.$router.push("/main/"+this.form.username);
+           
           } else {
             this.dialogVisible = true;
             return false;

@@ -90,7 +90,7 @@
         <div class="el-card-define">
           <el-image
             :src="item"
-            style="width: 200px; margin-left: 5px"
+            style="width: 100%; margin-left: 5px"
           ></el-image>
           <div class="btdiv">
             <i class="el-icon-download" @click="download_pic(item)"></i>
@@ -106,7 +106,7 @@
         <div class="el-card-define">
           <el-image
             :src="item"
-            style="width: 200px; margin-left: 5px"
+            style="width: 100%; margin-left: 5px"
           ></el-image>
           <div class="btdiv">
             <i class="el-icon-download" @click="download_pic(item)"></i>
@@ -119,11 +119,11 @@
 </template>
 
 <script>
-import axios from "axios";
+import _axios from '@/utils/_axios';
 export default {
   data() {
     return {
-      backend_url: "http://192.168.20.32:5000/get_img/",
+      backend_url: "http://127.0.0.1:5000/get_img/",
       subject_name: "锦城小学射箭社团",
       imglist: [],
       tableData: [
@@ -170,17 +170,20 @@ export default {
   },
 
   mounted() {
-    axios.get("http://192.168.20.32:5000/get_img_list").then(
+    _axios.get("http://127.0.0.1:5000/get_img_list").then(
       (success) => {
-        let data = success.data;
-        for (let i = 0; i < data.length; i++) {
-          data[i] = this.backend_url + data[i];
-        }
-        console.log(data);
-        this.imglist = data;
+         
+         let arr = success
+         for(let i = 0; i < arr.length; i++)
+         {
+
+          arr[i] = "http://127.0.0.1:5000/get_img/"+arr[i];
+         }
+         this.imglist = arr
       },
       (err) => {
-        console.log(err.message);
+
+        console.log("err.message", err);
       }
     );
   },
@@ -204,13 +207,18 @@ export default {
   display: block;
 }
 .btdiv {
+  width: 50%;
+  height: 50%;
   display: none;
   text-align: center;
   position: absolute;
-  left: 70px;
-  top: 50px;
+  left: 40%;
+  top: 30%;
 }
-i {
-  font-size: 30px;
+i{
+  font-size: 30px
+}
+.btdiv i{
+  color:white;
 }
 </style>

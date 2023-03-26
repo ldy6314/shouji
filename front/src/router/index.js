@@ -17,9 +17,6 @@ Vue.use(VueRouter)
 
 const routes = [{
         path: '/',
-        redirect: '/gailan'
-    }, {
-        path: '/gailan',
         name: 'gailan',
         component: GaiLan
     },
@@ -69,6 +66,7 @@ const routes = [{
 
 
 ]
+
 
 const router = new VueRouter({
     mode: 'history',

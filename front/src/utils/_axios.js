@@ -1,33 +1,35 @@
 import axios from 'axios'
-import { Message } from 'element-ui';
+
+
+/****** 创建axios实例 ******/
 const _axios = axios.create({
-    timeout: 5000,
+    // baseURL: "http:127.0.0.1:5000",
+    timeout: 5000 // 请求超时时间
+})
 
-});
-_axios.interceptors.request.use(config => {
-    let token = localStorage.getItem('token')
-    if(token){
-        config.headers.common['token'] = token
+_axios.interceptors.request.use(
+    config => {
+        config.headers['token'] = localStorage.getItem('token')
+        return config
+    },
+    error => {
+        console.log(error)
+        return Promise.reject(error)
     }
-    return config
-},
-error=>{
-    return Promise.reject(error)
-}
 )
 
-_axios.interceptors.response.use((res) => {
+/****** respone拦截器==>对响应做处理 ******/
+_axios.interceptors.response.use(
+    response => {
+        //这里根据后端提供的数据进行对应的处理
 
-    return res.data
-},
-    (error) => {
-        if( error.response.status === 401)
-            Message({
-                'message': error.response.data['message'],
-                'type': 'error'
-            })
-            return Promise.reject(error.response.data)
+        return response.data;
+
+    },
+    error => {
+        console.log(error);
+        return Promise.reject(error)
     }
-
 )
-export default _axios
+
+export default _axios;

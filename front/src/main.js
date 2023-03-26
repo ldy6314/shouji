@@ -8,6 +8,19 @@ import store from './store'
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 
+// router.beforeEach((from, to, next) => {
+//     alert(to.path)
+//     if (to.path === '/login') {
+//         next()
+//     } else {
+//         let token = localStorage.getItem('token')
+//         if (token === null || token === "") {
+//             next('/login')
+//         } else {
+//             next()
+//         }
+//     }
+// })
 
 new Vue({
     router,
