@@ -12,6 +12,7 @@ import JiHua from '@/components/JiHua'
 import JianJie from '@/components/JianJie'
 import AdminHome from '@/components/AdminHome'
 import AdminVue from '@/components/AdminVue'
+import AccountVue from '@/components/AccountVue'
 
 Vue.use(VueRouter)
 
@@ -24,6 +25,11 @@ const routes = [{
         path: '/adminhome',
         name: 'adminhome',
         component: AdminHome
+    },
+    {
+        path: '/account',
+        name: 'account',
+        component: AccountVue
     },
     {
         path: '/admin',

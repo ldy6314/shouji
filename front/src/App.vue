@@ -26,6 +26,9 @@
           <el-menu-item index="/admin" v-if="role==0"
             ><span style="font-size: 20px">社团管理</span></el-menu-item
           >
+          <el-menu-item index="/account" v-if="role==0"
+            ><span style="font-size: 20px">账户管理</span></el-menu-item
+          >
           <el-menu-item index="/jianjie" v-if="role==1"
             ><span style="font-size: 20px">社团简介</span></el-menu-item
           >
@@ -92,6 +95,8 @@ export default {
     let token = localStorage.getItem('token')
     let role = localStorage.getItem('role')
     this.$store.commit('LOGIN', {token:token, role:role})
+    if(role==0)
+      router.replace('adminhome')
     
   }
 };

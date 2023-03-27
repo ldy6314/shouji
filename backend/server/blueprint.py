@@ -11,7 +11,6 @@ bp = Blueprint('bp', __name__)
 
 @bp.before_app_first_request
 def first_request():
-    db.drop_all()
     db.create_all()
     try:
         os.mkdir(bp.root_path+"/data")
