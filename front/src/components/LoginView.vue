@@ -69,8 +69,12 @@ export default {
               success=>{
                 localStorage.setItem('token', success.token)
                 localStorage.setItem('subject_name', success.subject_name)
-               router.push('/')
-                this.$store.commit("LOGIN",{'token': success.token})
+                localStorage.setItem('role', success.role)
+                if(success.role==1)
+                  router.push('/')
+                else
+                  router.push('/adminhome')
+                this.$store.commit("LOGIN",{'token': success.token, 'role':success.role})
               },
               err=>{
                 Message({

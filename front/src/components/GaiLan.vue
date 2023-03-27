@@ -186,6 +186,7 @@ export default {
         console.log("err.message", err);
       }
     );
+    console.log('token=', this.$store.state.token)
   },
 };
 </script>

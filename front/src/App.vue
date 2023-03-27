@@ -17,25 +17,31 @@
           text-color="#fff"
           active-text-color="#ffd04b"
         >
-          <el-menu-item index="/"
+          <el-menu-item index="/" v-if="role==1"
             ><span style="font-size: 20px">社团概览</span></el-menu-item
           >
-          <el-menu-item index="/jianjie"
+          <el-menu-item index="/adminhome" v-if="role==0"
+            ><span style="font-size: 20px">管理首页</span></el-menu-item
+          >
+          <el-menu-item index="/admin" v-if="role==0"
+            ><span style="font-size: 20px">社团管理</span></el-menu-item
+          >
+          <el-menu-item index="/jianjie" v-if="role==1"
             ><span style="font-size: 20px">社团简介</span></el-menu-item
           >
-          <el-menu-item index="/jihua"
+          <el-menu-item index="/jihua" v-if="role==1"
             ><span style="font-size: 20px">社团计划</span></el-menu-item
           >
-          <el-menu-item index="/jiaoan"
+          <el-menu-item index="/jiaoan" v-if="role==1"
             ><span style="font-size: 20px">课时教案</span></el-menu-item
           >
-          <el-menu-item index="/zongjie"
+          <el-menu-item index="/zongjie" v-if="role==1"
             ><span style="font-size: 20px">社团总结</span></el-menu-item
           >
-          <el-menu-item index="/shunjian"
+          <el-menu-item index="/shunjian" v-if="role==1"
             ><span style="font-size: 20px">精彩瞬间</span></el-menu-item
           >
-          <el-menu-item index="/tese"
+          <el-menu-item index="/tese" v-if="role==1"
             ><span style="font-size: 20px">特色活动</span></el-menu-item
           >
           <el-menu-item  v-if="!logined" index="/login" class="login"
@@ -77,12 +83,16 @@ export default {
         return true
       else 
          return false
-    }
+    },
+   role(){
+    return this.$store.state.role
+   }
   },
   mounted(){
+    let token = localStorage.getItem('token')
+    let role = localStorage.getItem('role')
+    this.$store.commit('LOGIN', {token:token, role:role})
     
-    console.log(111111111111111111,this.$store.state.token)
-
   }
 };
 </script>

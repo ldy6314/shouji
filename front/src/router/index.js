@@ -10,8 +10,8 @@ import TeSe from '@/components/TeSe'
 import ZongJie from '@/components/ZongJie'
 import JiHua from '@/components/JiHua'
 import JianJie from '@/components/JianJie'
-
-
+import AdminHome from '@/components/AdminHome'
+import AdminVue from '@/components/AdminVue'
 
 Vue.use(VueRouter)
 
@@ -20,7 +20,16 @@ const routes = [{
         name: 'gailan',
         component: GaiLan
     },
-
+    {
+        path: '/adminhome',
+        name: 'adminhome',
+        component: AdminHome
+    },
+    {
+        path: '/admin',
+        name: 'admin',
+        component: AdminVue
+    },
     {
         path: '/login',
         name: 'login',

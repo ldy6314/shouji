@@ -35,10 +35,13 @@ def first_request():
                     subject_info = "管理工作好好玩" ,
                     username = "admin",
                     pwd="ldy7842431")
-        os.mkdir(bp.root_path + '/data/'+user1.subject_name)
         db.session.add(user1)
         db.session.add(user2)
         db.session.commit()
+    except Exception as e:
+        print(e)
+    try:
+          os.mkdir(bp.root_path + '/data/'+user1.subject_name)
     except Exception as e:
         print(e)
     print(bp.root_path +'/data')
@@ -56,10 +59,7 @@ def upload_pic():
 
 @bp.before_request
 def judge_login():
-    for key in request.headers:
-        print(key)
     token = request.headers.get('token')
-    print("the token=", token)
     if not token:
         g.current_user = None
         g.login_message = '尚未登录'
@@ -87,17 +87,19 @@ def login_required(func):
 
 @bp.route('/login', methods=['POST'])
 def login():
-    print('token=', request.headers.get('token'))
     data = request.get_json()
     username = data['account']
     pwd = data['password']
     res = User.query.filter_by(username=username).first()
-    subject_name = res.subject_name
+    
     if res and res.validate_password(pwd):
+        print("login with", res.username)
+        subject_name = res.subject_name
         token = generate_token(res.id)
-        print("token=",token)
-        return jsonify({'message': 'success', 'token': token, 'subject_name':subject_name}), 200
+        role = res.role
+        return jsonify({'message': 'success', 'token': token, 'subject_name':subject_name, "role":role}), 200
     else:
+        print("账号或者密码错误")
         return jsonify('账号或者密码错误'), 401
 
 
@@ -165,7 +167,7 @@ def update_info(person_id):
     return jsonify(response)
 
 @bp.route('/get_img_list', methods=['GET'])
-@login_required
+# @login_required
 def get_img_list():
     import os
     path = bp.root_path
