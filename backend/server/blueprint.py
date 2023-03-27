@@ -56,6 +56,17 @@ def upload_pic():
     return 'success'
 
 
+@bp.route("/get_userlist", methods=['GET'])
+def get_userlist():
+    res = User.query.all()
+    res = list(map(lambda x: {'subject_name': x.subject_name, 
+                              'teacher_name': x.teacher_name, 
+                              'username': x.username,
+                              "role": x.role
+                                  }, res))
+    return jsonify(res)
+
+
 @bp.before_request
 def judge_login():
     token = request.headers.get('token')
@@ -183,3 +194,32 @@ def get_img(img_name):
 def get_touxiang(img_name):
     path = bp.root_path + '/img/'
     return send_file(path+img_name)
+
+@bp.route('/add_user', methods=['POST'])
+def add_sigle_user():
+    data = request.get_json()
+    res = add_user(data)
+    if res == "账户添加成功":
+        return jsonify(res)
+    else:
+        return jsonify({"message": res}), 403
+    
+    
+def add_user(user_info):
+    user, subject_name, name, role, pwd = user_info['user'],user_info['subject_name'],user_info['name'], user_info['role'], user_info['pwd'] 
+    res = User.query.filter_by(username=user).first()
+    if res:
+        return "已经存在"
+    new_user = User(
+                    role = role,
+                    subject_name = subject_name,
+                    teacher_name = name,
+                    teacher_info = "",
+                    subject_info = "" ,
+                    username = user,
+                    pwd=pwd
+    )
+    db.session.add(new_user)
+    os.mkdir(bp.root_path + '/data/'+new_user.subject_name)
+    db.session.commit()
+    return "账户添加成功"

@@ -96,7 +96,7 @@ export default {
     let role = localStorage.getItem('role')
     this.$store.commit('LOGIN', {token:token, role:role})
     if(role==0)
-      router.replace('adminhome')
+      router.replace('/adminhome')
     
   }
 };
