@@ -2,43 +2,55 @@
   <div>
     <h3>批量上传账号</h3>
     <el-upload
-  class="upload-demo"
-  ref="upload"
-  action="https://jsonplaceholder.typicode.com/posts/"
-  :on-preview="handlePreview"
-  :on-remove="handleRemove"
-  :file-list="fileList"
-  :auto-upload="false">
-  <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-  <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
-  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-</el-upload>
-<h3>添加单个账户</h3>
-<el-form :inline="true" :model="formInline" class="demo-form-inline">
-  <el-form-item label="账户名">
-    <el-input v-model="formInline.user" placeholder="用户名"></el-input>
-  </el-form-item>
-  <el-form-item label="密码">
-    <el-input v-model="formInline.pwd" placeholder="密码"></el-input>
-  </el-form-item>
-  <el-form-item label="姓名">
-    <el-input v-model="formInline.name" placeholder="密码"></el-input>
-  </el-form-item>
-  <el-form-item label="社团名称">
-    <el-input v-model="formInline.subject_name" placeholder="账户名称"></el-input>
-  </el-form-item>
-  <el-form-item label="角色">
-    <el-select v-model="formInline.role" placeholder="角色">
-      <el-option label="管理员" value=0></el-option>
-      <el-option label="社团教师" value=1></el-option>
-    </el-select>
-  </el-form-item>
-  <el-form-item>
-    <el-button type="primary" @click="onSubmit">添加</el-button>
-  </el-form-item>
-</el-form>
-<h3>账户信息</h3>
-<el-table :data="userlist" style="width: 100%">
+      class="upload-demo"
+      ref="upload"
+      action="https://jsonplaceholder.typicode.com/posts/"
+      :on-preview="handlePreview"
+      :on-remove="handleRemove"
+      :file-list="fileList"
+      :auto-upload="false"
+    >
+      <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+      <el-button
+        style="margin-left: 10px"
+        size="small"
+        type="success"
+        @click="submitUpload"
+        >上传到服务器</el-button
+      >
+      <div slot="tip" class="el-upload__tip">
+        只能上传jpg/png文件，且不超过500kb
+      </div>
+    </el-upload>
+    <h3>添加单个账户</h3>
+    <el-form :inline="true" :model="formInline" class="demo-form-inline">
+      <el-form-item label="账户名">
+        <el-input v-model="formInline.user" placeholder="用户名"></el-input>
+      </el-form-item>
+      <el-form-item label="密码">
+        <el-input v-model="formInline.pwd" placeholder="密码"></el-input>
+      </el-form-item>
+      <el-form-item label="姓名">
+        <el-input v-model="formInline.name" placeholder="密码"></el-input>
+      </el-form-item>
+      <el-form-item label="社团名称">
+        <el-input
+          v-model="formInline.subject_name"
+          placeholder="账户名称"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="角色">
+        <el-select v-model="formInline.role" placeholder="角色">
+          <el-option label="管理员" value="0"></el-option>
+          <el-option label="社团教师" value="1"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit">添加</el-button>
+      </el-form-item>
+    </el-form>
+    <h3>账户信息</h3>
+    <el-table :data="userlist" style="width: 100%">
       <el-table-column label="序号" width="180">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.$index + 1 }}</span>
@@ -49,27 +61,36 @@
           <span>{{ scope.row.subject_name }}</span>
         </template>
       </el-table-column>
-        <el-table-column label="社团账号" width="180">
+      <el-table-column label="社团账号" width="180">
         <template slot-scope="scope">
-          <span>{{ scope.row.username}}</span>
+          <span>{{ scope.row.username }}</span>
         </template>
-        </el-table-column>
-          <el-table-column label="教师姓名" width="180">
+      </el-table-column>
+      <el-table-column label="教师姓名" width="180">
         <template slot-scope="scope">
           <span>{{ scope.row.teacher_name }}</span>
         </template>
-          </el-table-column>
+      </el-table-column>
 
       <el-table-column label="权限" width="180">
         <template slot-scope="scope">
-          <span>{{ scope.row.role==0 ? "管理员": "社团教师"}}</span>
+          <span>{{ scope.row.role == 0 ? "管理员" : "社团教师" }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <i class="el-icon-download"  type="primary"
-            @click="handleEdit(scope.$index, scope.row)"></i>
-            <i class="el-icon-delete"  @click="handleDelete(scope.$index, scope.row)"></i>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="resetPassword(scope.row.username)"
+            >重置密码</el-button
+          >
+          <el-button
+            type="danger"
+            size="mini"
+            @click="removeUser(scope.row.username)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -77,9 +98,10 @@
 </template>
 
 <script>
-import _axios from '@/utils/_axios';
-import { Message } from 'element-ui';
+import _axios from "@/utils/_axios";
+import { Message } from "element-ui";
 export default {
+  inject:['reload'],
   data() {
     return {
       fileList: [],
@@ -103,36 +125,72 @@ export default {
     handlePreview(file) {
       console.log(file);
     },
-    onSubmit() {
-       _axios.post('http://127.0.0.1:5000/add_user',
-          this.formInline
-       ).then(
-        success=>{
-           Message({'message':success})
-           this.userlist.push({
-            subject_name:this.formInline.subject_name,
-            teacher_name:this.formInline.name,
-            role:this.formInline.role,
-            username:this.formInline.user
-
-           })
-        },
-        err=>{
-          Message({'message':err.message})
+    resetPassword(username) {
+      if (username == "admin") return;
+      if (confirm("确定要重置密码？")) {
+        let data = { username: username };
+        _axios.post("http://127.0.0.1:5000/reset_password", data).then(
+          (success) => {
+            success;
+            alert("密码已经重置为88888888");
+          },
+          (error) => {
+            error;
+          }
+        );
+      }
+    },
+    removeUser(username) {
+      if (confirm(`确认要删除用户${username}一次`)) {
+        if (confirm(`确认要删除用户${username}两次`)) {
+          if (confirm(`确认要删除用户${username}三次`)) {
+            let data = { username: username };
+            _axios.post("http://127.0.0.1:5000/remove_user", data).then(
+              (success) => {
+                Message({
+                    message:success.message,
+                    type:"success"
+                })
+                this.reload()
+              },
+              (error) => {
+                Message({
+                    message:error.respone.message,
+                    type:"error"
+                })
+              }
+            );
+          }
         }
-       )
+      }
+    },
+    onSubmit() {
+      _axios.post("http://127.0.0.1:5000/add_user", this.formInline).then(
+        (success) => {
+          Message({ message: success });
+          this.userlist.push({
+            subject_name: this.formInline.subject_name,
+            teacher_name: this.formInline.name,
+            role: this.formInline.role,
+            username: this.formInline.user,
+          });
+        },
+        (err) => {
+          Message({ message: err.message });
+        }
+      );
     },
   },
-  mounted(){
-    _axios.get('http://127.0.0.1:5000/get_userlist').then(
-      success=>{
-        this.userlist = success
+  mounted() {
+    _axios.get("http://127.0.0.1:5000/get_userlist").then(
+      (success) => {
+        this.userlist = success;
       },
-      err=>{
-        console.log(err)
+      (err) => {
+        console.log(err);
       }
-    )
-  }
+    );
+  },
 };
 </script>
 

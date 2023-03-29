@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+import { Message } from 'element-ui'
 
 /****** 创建axios实例 ******/
 const _axios = axios.create({
@@ -27,7 +27,13 @@ _axios.interceptors.response.use(
 
     },
     error => {
-        console.log(error);
+        if(error.response.status==401)
+        {
+            Message({
+              message:"账号或者密码错误",
+              type: 'error'  
+            })
+        }
         return Promise.reject(error)
     }
 )

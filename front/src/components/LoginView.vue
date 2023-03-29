@@ -73,14 +73,15 @@ export default {
                 if(success.role==1)
                   router.push('/')
                 else
-                  router.push('/adminhome')
+                  router.push('/adminhome', ()=>{}, ()=>{})
                 this.$store.commit("LOGIN",{'token': success.token, 'role':success.role})
+                Message({
+                  message: "登录成功",
+                  type: "success"
+                })
               },
               err=>{
-                Message({
-                  'message': err,
-                  'type': "error"
-                })
+                err
               }
             )
             // 使用 vue-router 路由到指定页面，该方式称之为编程式导航

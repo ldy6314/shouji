@@ -56,7 +56,7 @@
       </el-col>
     </el-row>
     <el-row>
-      <router-view> 显示区 </router-view>
+      <router-view v-if="isRouterAlive"> 显示区 </router-view>
     </el-row>
   </div>
 </template>
@@ -66,8 +66,15 @@ export default {
   data() {
     return {
       activeIndex2: "1",
+      isRouterAlive: true
     };
   },
+  provide(){
+    return {
+      reload: this.reload
+    }
+  }
+  ,
   methods: {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
@@ -77,6 +84,12 @@ export default {
         this.logined = false
         this.$store.commit('LOGIN', {token:""})
         router.push('/login')
+    },
+    reload(){
+      this.isRouterAlive = false
+      this.$nextTick(function(){
+        this.isRouterAlive = true
+      })
     }
   },
   computed:{
