@@ -2,14 +2,15 @@
   <div>
           <h3>教学计划</h3>
           <el-upload
-          class="upload-demo"
-          ref="upload"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :file-list="fileList"
-          :auto-upload="false"
-        >
+  class="upload-demo"
+  ref="upload"
+  action="http://127.0.0.1:5000/upload/subject_name/dirname"
+  :on-preview="handlePreview"
+  :on-remove="handleRemove"
+  :file-list="fileList"
+  :headers="set_headers"
+  :multiple="true"
+  :auto-upload="false">
           <el-button slot="trigger" size="small" type="primary"
             >选取文件</el-button
           >
@@ -31,16 +32,12 @@
 export default {
   data() {
     return {
-      fileList: [
-        {
-          name: "food.jpeg",
-          url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-        },
-        {
-          name: "food2.jpeg",
-          url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-        },
-      ],
+      fileList:[],
+       set_headers:  {
+          token: localStorage.getItem('token'),
+          subject_name: encodeURIComponent(localStorage.getItem('subject_name')),
+          dirname: encodeURIComponent("社团计划")
+        }
     };
   },
   methods: {

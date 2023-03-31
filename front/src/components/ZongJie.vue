@@ -4,7 +4,7 @@
  <el-upload
   class="upload-demo"
   ref="upload"
-  action="http://127.0.0.1:5000/upload/zongjie"
+  action="http://127.0.0.1:5000/upload/subject_name/dirname"
   :on-preview="handlePreview"
   :on-remove="handleRemove"
   :file-list="fileList"
@@ -27,7 +27,7 @@
         set_headers:  {
           token: localStorage.getItem('token'),
           subject_name: encodeURIComponent(localStorage.getItem('subject_name')),
-          dirname: "zongjie"
+          dirname: encodeURIComponent("社团总结")
         }
       };
     },

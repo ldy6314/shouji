@@ -256,9 +256,13 @@ def remove_user():
      else:
          return jsonify({"message":"删除成功" })
      
-@bp.route('/upload/<dirname>', methods=['POST'])
-def upload_file(dirname):
-    subject_name = urllib.parse.unquote(request.headers['subject_name'])
+@bp.route('/upload/<subject_name>/<dirname>', methods=['POST'])
+def upload_file(subject_name, dirname):
+    print(request.files)
+    subject_name = urllib.parse.unquote(request.headers[subject_name])
+    dirname =  urllib.parse.unquote(request.headers[dirname])
     path = bp.root_path + '/data/' + subject_name + '/'+dirname
     print(path)
+    file = request.files['file']
+    file.save(path+'/'+file.filename)
     return jsonify({'token':"1331"})
