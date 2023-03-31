@@ -5,6 +5,9 @@ from .extentions import db
 from functools import wraps
 from .utils import generate_token, decode_token
 import os
+import urllib .parse
+
+
 
 bp = Blueprint('bp', __name__)
 
@@ -17,15 +20,6 @@ def first_request():
     except Exception as e:
         print(e)
     try:
-        user1 = User(
-                    role = 1,
-                    subject_name = "趣味编程",
-                    teacher_name = "老鲁",
-                    teacher_info = "我是一个又有趣的教师",
-                    subject_info = "我是一个又有趣的社团" ,
-                    username = "ldy6314",
-                    pwd="ldy7842431"
-        )
         user2 =  User(
                     role = 0,
                     subject_name = "管理员",
@@ -34,16 +28,11 @@ def first_request():
                     subject_info = "管理工作好好玩" ,
                     username = "admin",
                     pwd="ldy7842431")
-        db.session.add(user1)
         db.session.add(user2)
         db.session.commit()
     except Exception as e:
         print(e)
-    try:
-          os.mkdir(bp.root_path + '/data/'+user1.subject_name)
-    except Exception as e:
-        print(e)
-    print(bp.root_path +'/data')
+
 
 @bp.route('/')
 def index():
@@ -70,6 +59,7 @@ def get_userlist():
 @bp.before_request
 def judge_login():
     token = request.headers.get('token')
+    print("token",token)
     if not token:
         g.current_user = None
         g.login_message = '尚未登录'
@@ -109,8 +99,7 @@ def login():
         role = res.role
         return jsonify({'message': 'success', 'token': token, 'subject_name':subject_name, "role":role}), 200
     else:
-        print("账号或者密码错误")
-        return jsonify('账号或者密码错误'), 401
+        return jsonify({'message':'账号或者密码错误'}), 401
 
 
 @bp.route('/get_all')
@@ -198,6 +187,11 @@ def get_touxiang(img_name):
 @bp.route('/add_user', methods=['POST'])
 def add_sigle_user():
     data = request.get_json()
+    if data['role'] == "社团教师":
+        data['role'] = 1
+    else:
+        data['role'] = 0
+    print(data)
     res = add_user(data)
     if res == "账户添加成功":
         return jsonify(res)
@@ -220,6 +214,51 @@ def add_user(user_info):
                     pwd=pwd
     )
     db.session.add(new_user)
-    os.mkdir(bp.root_path + '/data/'+new_user.subject_name)
-    db.session.commit()
+    
+    if role == 1:
+        dirname = bp.root_path + '/data/'+new_user.subject_name
+        if not os.path.exists(dirname):
+            os.mkdir(dirname)
+        subdirnames = ["教师风采","课时教案", "社团计划", "社团总结", "特色活动方案", "特色活动图片"]
+        os.chdir(bp.root_path + '/data/'+new_user.subject_name)
+        for sub in subdirnames:
+            try:
+                os.mkdir(sub)
+            except FileExistsError as e:
+                print(e)
+        db.session.commit()
+    
     return "账户添加成功"
+
+
+
+@bp.route("/reset_password", methods=['POST'])
+def reset_password():
+    json = request.get_json()
+    username = json['username']
+    res = User.query.filter_by(username=username).first()
+    res.set_password("88888888")
+    db.session.commit()
+    return "hahah "
+
+
+
+@bp.route("/remove_user", methods=['POST'])
+def remove_user():
+     json = request.get_json()
+     username = json['username']
+     res = User.query.filter_by(username=username).first()
+     try:
+        db.session.delete(res)
+        db.session.commit()
+     except Exception as e:
+         return jsonify({"message":e}), 404
+     else:
+         return jsonify({"message":"删除成功" })
+     
+@bp.route('/upload/<dirname>', methods=['POST'])
+def upload_file(dirname):
+    subject_name = urllib.parse.unquote(request.headers['subject_name'])
+    path = bp.root_path + '/data/' + subject_name + '/'+dirname
+    print(path)
+    return jsonify({'token':"1331"})

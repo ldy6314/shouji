@@ -9,6 +9,7 @@
       :on-remove="handleRemove"
       :file-list="fileList"
       :auto-upload="false"
+      :before-upload="beforeUpload"
     >
       <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
       <el-button
@@ -19,7 +20,7 @@
         >上传到服务器</el-button
       >
       <div slot="tip" class="el-upload__tip">
-        只能上传jpg/png文件，且不超过500kb
+        只能上传.xlsx文件
       </div>
     </el-upload>
     <h3>添加单个账户</h3>
@@ -125,6 +126,10 @@ export default {
     handlePreview(file) {
       console.log(file);
     },
+    beforeUpload()
+    {
+       alert(this.fileList.length)
+    },
     resetPassword(username) {
       if (username == "admin") return;
       if (confirm("确定要重置密码？")) {
@@ -167,13 +172,8 @@ export default {
     onSubmit() {
       _axios.post("http://127.0.0.1:5000/add_user", this.formInline).then(
         (success) => {
-          Message({ message: success });
-          this.userlist.push({
-            subject_name: this.formInline.subject_name,
-            teacher_name: this.formInline.name,
-            role: this.formInline.role,
-            username: this.formInline.user,
-          });
+          Message({ message: success , type:"success"});
+          this.reload()
         },
         (err) => {
           Message({ message: err.message });

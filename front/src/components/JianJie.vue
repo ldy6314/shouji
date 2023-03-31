@@ -3,7 +3,7 @@
     <h3>教师风采</h3>
     <el-upload
       class="avatar-uploader"
-      action="http://192.168.20.32:5000/upload_pic"
+      action="http://127.0.0.1:5000/upload_pic"
       :show-file-list="false"
       :on-success="handleAvatarSuccess"
       :before-upload="beforeAvatarUpload"
