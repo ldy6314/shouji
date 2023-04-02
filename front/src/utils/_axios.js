@@ -3,7 +3,7 @@ import { Message } from 'element-ui'
 
 /****** 创建axios实例 ******/
 const _axios = axios.create({
-    // baseURL: "http:127.0.0.1:5000",
+    baseURL: "http://127.0.0.1:5000",
     timeout: 5000 // 请求超时时间
 })
 
@@ -27,11 +27,10 @@ _axios.interceptors.response.use(
 
     },
     error => {
-        if(error.response.status==401)
-        {
+        if (error.response.status == 401) {
             Message({
-              message:"账号或者密码错误",
-              type: 'error'  
+                message: "账号或者密码错误",
+                type: 'error'
             })
         }
         return Promise.reject(error)

@@ -3,12 +3,12 @@
     <h3>{{ subject_name }}</h3>
     <h3>社团介绍</h3>
     <p>
-      社团介绍..............................................................................
+      {{subject_info}}
     </p>
     <h3>教师风采</h3>
-    <el-image :src="imglist[2]" style="width: 400px"> </el-image>
+    <el-image :src="tx_url" style="width: 400px"> </el-image>
     <p>
-      教师介绍..............................................................................
+      {{teacher_info}}
     </p>
     <h3>文字资料</h3>
     <el-table :data="tableData" style="width: 100%">
@@ -126,32 +126,12 @@ export default {
       backend_url: "http://127.0.0.1:5000/get_img/",
       subject_name: "锦城小学射箭社团",
       imglist: [],
-      tableData: [
-        {
-          name: "社团计划",
-          filename: "社团计划.docx",
-        },
-        {
-          name: "社团总结",
-          filename: "社团总结.docx",
-        },
-        {
-          name: "社团特色活动方案",
-          filename: "社团特色活动方案.docx",
-        },
-      ],
-      tableData2: [
-        {
-          name: "第1课时教案.docx",
-        },
-        {
-          name: "第2课时教案.docx",
-        },
-
-        {
-          name: "第12课时教案.docx",
-        },
-      ],
+      tableData: [],
+      tableData2: [],
+      tslist:[],
+      tx_url: "",
+      subject_info: "",
+      teacher_info:""
     };
   },
   methods: {
@@ -170,7 +150,21 @@ export default {
   },
 
   mounted() {
-    _axios.get("http://127.0.0.1:5000/get_img_list").then(
+    let data={
+      subject_name: localStorage.getItem('subject_name'),
+      back_url: this.$store.state.back_url
+    }
+    _axios.post("get_userinfos", data).then(
+      success=>{
+        this.tx_url = data.back_url + '/get_tx/'+encodeURIComponent(data.subject_name)+'/'+success.tx
+        this.subject_info = success.subject_info
+        this.teacher_info = success.teacher_info
+      },
+      err=>{
+        console.log(err)
+      }
+    )
+    _axios.get("get_img_list").then(
       (success) => {
          
          let arr = success

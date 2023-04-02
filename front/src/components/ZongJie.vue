@@ -10,6 +10,7 @@
   :file-list="fileList"
   :headers="set_headers"
   :multiple="true"
+  :limit ="1"
   :auto-upload="false">
 
   <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -42,7 +43,6 @@
         console.log(file);
       },
       handleChange(){
-          alert(this.fileList)
       },
   
     },

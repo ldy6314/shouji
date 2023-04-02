@@ -41,7 +41,7 @@ def index():
 
 @bp.route('/upload_pic', methods=['POST'])
 def upload_pic():
-    print(request.files)
+    # print(request.files)
     return 'success'
 
 
@@ -93,7 +93,7 @@ def login():
     res = User.query.filter_by(username=username).first()
     
     if res and res.validate_password(pwd):
-        print("login with", res.username)
+        # print("login with", res.username)
         subject_name = res.subject_name
         token = generate_token(res.id)
         role = res.role
@@ -106,20 +106,12 @@ def login():
 @login_required
 def get_all():
     res = People.query.all()
-    print(res)
     res = list(map(lambda x: {'id': x.id, 'name': x.name, 'age': x.age}, res))
-    print(res)
     return jsonify(
         res
     )
 
 
-@bp.route('/logout')
-def logout():
-    g.current_user = None
-    g.login_message = '未登录'
-    print('login out success')
-    return jsonify({'message': '登出成功'}), 200
 
 
 @bp.route('/clear_all')
@@ -178,11 +170,13 @@ def get_img(img_name):
     path = bp.root_path + '/img/'
     return send_file(path+img_name)
 
-
-@bp.route('/get_touxiang/<img_name>', methods=['GET'])
-def get_touxiang(img_name):
-    path = bp.root_path + '/img/'
+@bp.route('/get_tx/<subject_name>/<img_name>', methods=['GET'])
+def get_touxiang(subject_name,img_name):
+    subject_name = urllib.parse.unquote(subject_name)
+    path = bp.root_path +  '/data/'+subject_name+'/教师风采/'
     return send_file(path+img_name)
+     
+
 
 @bp.route('/add_user', methods=['POST'])
 def add_sigle_user():
@@ -191,7 +185,6 @@ def add_sigle_user():
         data['role'] = 1
     else:
         data['role'] = 0
-    print(data)
     res = add_user(data)
     if res == "账户添加成功":
         return jsonify(res)
@@ -219,7 +212,7 @@ def add_user(user_info):
         dirname = bp.root_path + '/data/'+new_user.subject_name
         if not os.path.exists(dirname):
             os.mkdir(dirname)
-        subdirnames = ["教师风采","课时教案", "社团计划", "社团总结", "特色活动方案", "特色活动图片"]
+        subdirnames = ["教师风采","课时教案", "社团计划", "社团总结", "特色活动方案", "特色活动图片","精彩瞬间"]
         os.chdir(bp.root_path + '/data/'+new_user.subject_name)
         for sub in subdirnames:
             try:
@@ -258,11 +251,64 @@ def remove_user():
      
 @bp.route('/upload/<subject_name>/<dirname>', methods=['POST'])
 def upload_file(subject_name, dirname):
+    print(subject_name, dirname)
     print(request.files)
+
     subject_name = urllib.parse.unquote(request.headers[subject_name])
     dirname =  urllib.parse.unquote(request.headers[dirname])
     path = bp.root_path + '/data/' + subject_name + '/'+dirname
     print(path)
+   
+    l = len(os.listdir(path))
+    print("l=", l)
+    if dirname != "精彩瞬间":
+        if l:
+            files = os.listdir(path)
+            for file in files:
+                os.remove(path+'/'+file)
     file = request.files['file']
     file.save(path+'/'+file.filename)
     return jsonify({'token':"1331"})
+
+@bp.route('/upload_mult/<subject_name>/<dirname>', methods=['POST'])
+def upload_files(subject_name, dirname):
+    subject_name = urllib.parse.unquote(request.headers[subject_name])
+    dirname =  urllib.parse.unquote(request.headers[dirname])
+    path = bp.root_path + '/data/' + subject_name + '/'+dirname
+    file = request.files["file"]
+   
+    file.save(path+'/'+file.filename)
+    return jsonify({'token':"1331"})
+
+
+@bp.route('/add_subject_info', methods=['POST'])
+def add_subject_info():
+    form = request.form
+    teacher_info = form['teacher_info']
+    subject_info = form['subject_info']
+    subject_name = form['subject_name']
+    res = User.query.filter_by(subject_name=subject_name).first()
+    res.teacher_info = teacher_info
+    res.subject_info = subject_info
+    db.session.commit()
+    return "修改成功"
+
+
+
+@bp.route('/get_userinfos', methods=['POST'])
+def get_user_infos():
+    json = request.get_json()
+    subject_name = json['subject_name']
+    res = User.query.filter_by(subject_name=subject_name).first()
+    teacher_info = res.teacher_info
+    subject_info = res.subject_info
+    back_url = json['back_url']
+    respone = dict()
+    base_path = bp.root_path + '/data/' + subject_name 
+    tx = os.listdir(base_path+'/教师风采')
+    tx = tx[0]
+    respone['base_url'] = back_url+'/'+base_path
+    respone['tx'] = tx
+    respone['subject_info'] = subject_info
+    respone['teacher_info'] =teacher_info
+    return jsonify(respone)

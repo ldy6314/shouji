@@ -4,7 +4,7 @@ from functools import wraps
 SECRET_KEY = b'\x92\x8e\xc6\x9c\xb3\x89\xa6\x0c\xcb\xf6\xcb\xd7\xbc'
 
 
-def generate_token(userid=0, algorithm='HS256', exp=2, key=SECRET_KEY):
+def generate_token(userid=0, algorithm='HS256', exp=14*24, key=SECRET_KEY):
     now = datetime.utcnow()
     exp_int = now + timedelta(hours=exp)
     payload = {

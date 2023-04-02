@@ -8,10 +8,14 @@ export default new Vuex.Store({
         token: "",
         subject_name: " ",
         role: 0,
+        back_url: "http://127.0.0.1:5000"
     },
     getters: {
         token: (state) => {
             return state.token
+        },
+        back_url: (state) => {
+            return state.back_url
         }
     },
     mutations: {
