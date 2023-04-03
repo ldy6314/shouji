@@ -42,6 +42,31 @@ def index():
 
 
 
+@bp.route("/get_admin_infos", methods=['GET'])
+def get_admin_infos():
+    key_dic = {"教师风采":"fengcai","课时教案":"jiaoan", "社团计划":"jihua", "社团总结":"zongjie", "特色活动方案":"tese", "特色活动图片":"tesetp","精彩瞬间":"shunjian"}
+    path = bp.root_path + '/data/'
+    response = []
+    lst= os.listdir(path)
+    for subject in lst:
+        print(subject)
+        in_dict = dict()
+        obj = {'subject_name':subject, 'content':in_dict}
+        in_path = path + '/' + subject
+        lst1 = os.listdir(in_path)
+        for subdir in lst1:
+            in_in_path = in_path + '/' + subdir
+            try:
+                in_list = os.listdir(in_in_path)
+            except Exception as e:
+                print(e)
+            else:
+                in_dict[key_dic[subdir]] = in_list  
+        response.append(obj)
+        print(obj)
+       
+    return jsonify(response)
+
 @bp.route("/get_userlist", methods=['GET'])
 def get_userlist():
     res = User.query.all()
@@ -51,7 +76,6 @@ def get_userlist():
                               "role": x.role
                                   }, res))
     return jsonify(res)
-
 
 @bp.before_request
 def judge_login():
@@ -98,23 +122,6 @@ def login():
         return jsonify({'message':'账号或者密码错误'}), 401
 
 
-@bp.route('/get_all')
-@login_required
-def get_all():
-    res = People.query.all()
-    res = list(map(lambda x: {'id': x.id, 'name': x.name, 'age': x.age}, res))
-    return jsonify(
-        res
-    )
-
-
-
-@bp.route('/get_img_list', methods=['GET'])
-# @login_required
-def get_img_list():
-    import os
-    path = bp.root_path
-    return jsonify(os.listdir(path+'/img'))
 
 
 @bp.route('/get_img/<img_name>', methods=['GET'])
@@ -199,14 +206,47 @@ def upload_users():
     st = wb.worksheets[0]
     rows = st.max_row
     cols = st.max_column
-    res = st.iter_rows(min_row=3)
-    
-    for i in res:
+    iter = st.iter_rows(min_row=3)
+    succ = []
+    fail=[]
+    for i in iter:
         infos = list(map(lambda x:x.value, i))
         username, pwd, teacher_name, subject_name, role = infos
-        print(username, pwd, teacher_name, subject_name, role )
+        pwd =str(pwd)
+        print(infos)
+        try:
+             new_user = User(
+                    role = role,
+                    subject_name = subject_name,
+                    teacher_name = teacher_name,
+                    teacher_info = "",
+                    subject_info = "" ,
+                    username = username,
+                    pwd=pwd)
+             db.session.add(new_user)
+             db.session.commit()
+        except Exception as  e:
+            fail.append(subject_name)
+            print(e)
+        else:
+            dirname = bp.root_path + '/data/'+new_user.subject_name
+            if not os.path.exists(dirname):
+                os.mkdir(dirname)
+            subdirnames = ["教师风采","课时教案", "社团计划", "社团总结", "特色活动方案", "特色活动图片","精彩瞬间"]
+            os.chdir(bp.root_path + '/data/'+new_user.subject_name)
+            for sub in subdirnames:
+                try:
+                    os.mkdir(sub)
+                except FileExistsError as e:
+                    print(e)
+            succ.append(subject_name)
+            
+                
         
-    return "hahah"
+    return jsonify({
+        "success":succ,
+        "fail":fail
+    })
 
 
 

@@ -137,12 +137,15 @@ export default {
         })
         return false
     },
-    show_success()
+    show_success(res)
     {
+        console.log(res)
         Message({
+        
           message:"上传成功",
           type: "success"
         })
+        this.reload()
     },
     resetPassword(username) {
       if (username == "admin") return;
