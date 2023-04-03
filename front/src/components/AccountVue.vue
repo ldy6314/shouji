@@ -4,11 +4,12 @@
     <el-upload
       class="upload-demo"
       ref="upload"
-      action="https://jsonplaceholder.typicode.com/posts/"
+      action="http://127.0.0.1:5000/upload_users"
       :on-preview="handlePreview"
       :on-remove="handleRemove"
       :file-list="fileList"
       :auto-upload="false"
+      :on-success="show_success"
       :before-upload="beforeUpload"
     >
       <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -126,9 +127,22 @@ export default {
     handlePreview(file) {
       console.log(file);
     },
-    beforeUpload()
+    beforeUpload(file)
     {
-       alert(this.fileList.length)
+       if(file.type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+           return true
+        Message({
+          message: "只能选择.xlsx文件",
+          type:"warning"
+        })
+        return false
+    },
+    show_success()
+    {
+        Message({
+          message:"上传成功",
+          type: "success"
+        })
     },
     resetPassword(username) {
       if (username == "admin") return;

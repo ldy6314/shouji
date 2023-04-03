@@ -9,6 +9,7 @@ flask-sqlalchemy = "*"
 python-dotenv = "*"
 flask-cors = "*"
 pyjwt = "*"
+openpyxl = "*"
 
 [dev-packages]
 watchdog = "*"

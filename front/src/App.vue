@@ -23,9 +23,7 @@
           <el-menu-item index="/adminhome" v-if="role==0"
             ><span style="font-size: 20px">管理首页</span></el-menu-item
           >
-          <el-menu-item index="/admin" v-if="role==0"
-            ><span style="font-size: 20px">社团管理</span></el-menu-item
-          >
+      
           <el-menu-item index="/account" v-if="role==0"
             ><span style="font-size: 20px">账户管理</span></el-menu-item
           >

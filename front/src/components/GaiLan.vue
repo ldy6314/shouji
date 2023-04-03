@@ -7,6 +7,7 @@
     </p>
     <h3>教师风采</h3>
     <el-image :src="tx_url" style="width: 400px"> </el-image>
+    <h3>教师简介</h3>
     <p>
       {{teacher_info}}
     </p>
@@ -24,18 +25,6 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <!-- <el-button
-            size="mini"
-            type="primary"
-            @click="handleEdit(scope.$index, scope.row)"
-            >下载</el-button
-          >
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-            >删除</el-button
-          > -->
           <i class="el-icon-download"  type="primary"
             @click="handleEdit(scope.$index, scope.row)"></i>
             <i class="el-icon-delete"  @click="handleDelete(scope.$index, scope.row)"></i>
@@ -56,37 +45,15 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <!-- <el-button
-            size="mini"
-            type="primary"
-            @click="handleEdit(scope.$index, scope.row)"
-            >下载</el-button
-          >
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-            >删除</el-button
-          > -->
-          <i class="el-icon-download"  type="primary"
+          <i class="el-icon-edit"  type="primary"
             @click="handleEdit(scope.$index, scope.row)"></i>
-            <i class="el-icon-delete"  @click="handleDelete(scope.$index, scope.row)"></i>
+            <i class="el-icon-delete"  @click="removeimage(scope.row.name)"></i>
         </template>
       </el-table-column>
     </el-table>
     <h3>精彩瞬间图片</h3>
-
-    <!-- <el-card>
-      <el-image
-      v-for="(item, index) in imglist"
-      :key="index"
-      :src="item"
-      style="width: 100px; margin-left: 5px"
-    >
-    </el-image>
-  </el-card> -->
     <el-row>
-      <el-col :span="3" v-for="(item, index) in imglist" :key="index">
+      <el-col :span="3" v-for="(item, index) in shunjian_list" :key="index">
         <div class="el-card-define">
           <el-image
             :src="item"
@@ -94,7 +61,7 @@
           ></el-image>
           <div class="btdiv">
             <i class="el-icon-download" @click="download_pic(item)"></i>
-            <i class="el-icon-delete"></i>
+            <i class="el-icon-delete" @click="removeimage(item)"></i>
           </div>
         </div>
       </el-col>
@@ -102,7 +69,7 @@
 
     <h3>特色活动图片</h3>
     <el-row>
-      <el-col :span="3" v-for="(item, index) in imglist" :key="index">
+      <el-col :span="3" v-for="(item, index) in tese_list" :key="index">
         <div class="el-card-define">
           <el-image
             :src="item"
@@ -110,7 +77,7 @@
           ></el-image>
           <div class="btdiv">
             <i class="el-icon-download" @click="download_pic(item)"></i>
-            <i class="el-icon-delete"></i>
+            <i class="el-icon-delete" @click="removeimage(item)"></i>
           </div>
         </div>
       </el-col>
@@ -120,15 +87,17 @@
 
 <script>
 import _axios from '@/utils/_axios';
+import { Message } from 'element-ui';
 export default {
+  inject: ['reload'],
   data() {
     return {
       backend_url: "http://127.0.0.1:5000/get_img/",
-      subject_name: "锦城小学射箭社团",
-      imglist: [],
+      subject_name: "",
+      shunjian_list: [],
+      tese_list:[],
       tableData: [],
       tableData2: [],
-      tslist:[],
       tx_url: "",
       subject_info: "",
       teacher_info:""
@@ -141,8 +110,39 @@ export default {
     handleDelete(index, row) {
       console.log(index, row);
     },
-    removeimage(url) {
-      alert(url);
+    removeimage(item) {
+      console.log(item)
+      let a = item.split("/");
+      console.log(a)
+      let image_name = a[a.length-1]
+      let dir = a[a.length-3]
+      let dir_name=""
+      if(dir == "get_sj")
+        dir_name = "精彩瞬间"
+      else  if(dir=="get_ts")
+        dir_name = "特色活动图片" 
+      else
+         dir_name ="课时教案"
+      let data ={
+        subject_name:this.subject_name,
+        dir_name:dir_name ,
+        image_name:image_name
+      }
+      _axios.post('remove_resource', data).then(
+        success=>{
+          success
+          Message({
+            message:"删除成功",
+            type: "success"
+          })
+          this.reload()
+        },
+        err=>{
+          Message({message:err.response.message,
+          type: "danger"
+        })
+        }
+      )
     },
     download_pic(item) {
       alert(item);
@@ -154,40 +154,60 @@ export default {
       subject_name: localStorage.getItem('subject_name'),
       back_url: this.$store.state.back_url
     }
+    this.subject_name = data.subject_name
     _axios.post("get_userinfos", data).then(
       success=>{
         this.tx_url = data.back_url + '/get_tx/'+encodeURIComponent(data.subject_name)+'/'+success.tx
         this.subject_info = success.subject_info
         this.teacher_info = success.teacher_info
+        for(let pic of success.shunjian)
+        {
+         
+          this.shunjian_list.push( data.back_url + '/get_sj/'+encodeURIComponent(data.subject_name)+'/'+pic)
+        }
+        for(let pic of success.tesetupian)
+        {
+          this.tese_list.push( data.back_url + '/get_ts/'+encodeURIComponent(data.subject_name)+'/'+pic)
+        }
+        for(let ja of success.jiaoan){
+          this.tableData2.push({
+            name:ja
+          })
+        }
+
+        let  a =[
+          {
+            name: "计划",
+            filename:success.jihua[0] || "未上传"
+          },
+          {
+            name:"总结",
+            filename:success.zongjie[0]|| "未上传"
+          },
+          {
+            name:"特色活动方案",
+            filename:success.tesefa[0] || "未上传" 
+          }
+        ]
+
+         success.tesefa[0]
+        for(let ja of a){
+           this.tableData.push(ja)
+        }
+
+
       },
       err=>{
         console.log(err)
       }
     )
-    _axios.get("get_img_list").then(
-      (success) => {
-         
-         let arr = success
-         for(let i = 0; i < arr.length; i++)
-         {
-
-          arr[i] = "http://127.0.0.1:5000/get_img/"+arr[i];
-         }
-         this.imglist = arr
-      },
-      (err) => {
-
-        console.log("err.message", err);
-      }
-    );
-    console.log('token=', this.$store.state.token)
   },
 };
 </script>
 
 <style scoped>
 .img {
-  width: 100px;
+  height: 200px;
 }
 .el-card-define {
   position: relative;
@@ -202,8 +222,6 @@ export default {
   display: block;
 }
 .btdiv {
-  width: 50%;
-  height: 50%;
   display: none;
   text-align: center;
   position: absolute;
@@ -214,6 +232,6 @@ i{
   font-size: 30px
 }
 .btdiv i{
-  color:white;
+  color:black;
 }
 </style>

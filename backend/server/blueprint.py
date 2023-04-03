@@ -6,8 +6,9 @@ from functools import wraps
 from .utils import generate_token, decode_token
 import os
 import urllib .parse
-
-
+from docxtpl import DocxTemplate
+from shutil import  rmtree
+from  openpyxl import load_workbook
 
 bp = Blueprint('bp', __name__)
 
@@ -39,10 +40,6 @@ def index():
     return jsonify("Hello World!111111111111\n")
 
 
-@bp.route('/upload_pic', methods=['POST'])
-def upload_pic():
-    # print(request.files)
-    return 'success'
 
 
 @bp.route("/get_userlist", methods=['GET'])
@@ -93,7 +90,6 @@ def login():
     res = User.query.filter_by(username=username).first()
     
     if res and res.validate_password(pwd):
-        # print("login with", res.username)
         subject_name = res.subject_name
         token = generate_token(res.id)
         role = res.role
@@ -113,50 +109,6 @@ def get_all():
 
 
 
-
-@bp.route('/clear_all')
-def clear_all():
-    persons = People.query.all()
-    for person in persons:
-        db.session.delete(person)
-    db.session.commit()
-    return 'clear'
-
-
-@bp.route('/add_student', methods=['POST'])
-def add_student():
-    data = request.get_json()
-    name, age = data['name'], data['age']
-    response = dict()
-    res = People.query.filter(People.name == name).first()
-    if not res:
-        person = People(name=name, age=age)
-        db.session.add(person)
-        db.session.commit()
-    response['result'] = 'fail' if res else 'success'
-
-    return jsonify(response)
-
-
-@bp.route('/delete/<int:person_id>', methods=['GET'])
-def delete_person(person_id):
-    res = People.query.filter_by(id=person_id).first()
-    db.session.delete(res)
-    db.session.commit()
-    return jsonify(res.name)
-
-
-@bp.route('/updateInfo/<int:person_id>', methods=['POST'])
-def update_info(person_id):
-    data = request.get_json()
-    _, age = data['name'], data['age']
-    response = dict()
-    res = People.query.filter(People.id == person_id).first()
-    response['result'] = 'success' if res else 'fail'
-    res.age = age
-    db.session.commit()
-    return jsonify(response)
-
 @bp.route('/get_img_list', methods=['GET'])
 # @login_required
 def get_img_list():
@@ -174,6 +126,20 @@ def get_img(img_name):
 def get_touxiang(subject_name,img_name):
     subject_name = urllib.parse.unquote(subject_name)
     path = bp.root_path +  '/data/'+subject_name+'/教师风采/'
+    return send_file(path+img_name)
+
+
+@bp.route('/get_sj/<subject_name>/<img_name>', methods=['GET'])
+def get_shunjian(subject_name,img_name):
+    subject_name = urllib.parse.unquote(subject_name)
+    path = bp.root_path +  '/data/'+subject_name+'/精彩瞬间/'
+    return send_file(path+img_name)
+     
+
+@bp.route('/get_ts/<subject_name>/<img_name>', methods=['GET'])
+def get_tese(subject_name,img_name):
+    subject_name = urllib.parse.unquote(subject_name)
+    path = bp.root_path +  '/data/'+subject_name+'/特色活动图片/'
     return send_file(path+img_name)
      
 
@@ -225,6 +191,25 @@ def add_user(user_info):
 
 
 
+@bp.route('/upload_users', methods=['POST'])
+def upload_users():
+    file = request.files['file']
+    file.save(file.filename)
+    wb = load_workbook(file.filename)
+    st = wb.worksheets[0]
+    rows = st.max_row
+    cols = st.max_column
+    res = st.iter_rows(min_row=3)
+    
+    for i in res:
+        infos = list(map(lambda x:x.value, i))
+        username, pwd, teacher_name, subject_name, role = infos
+        print(username, pwd, teacher_name, subject_name, role )
+        
+    return "hahah"
+
+
+
 @bp.route("/reset_password", methods=['POST'])
 def reset_password():
     json = request.get_json()
@@ -247,18 +232,16 @@ def remove_user():
      except Exception as e:
          return jsonify({"message":e}), 404
      else:
+         subject_name = res.subject_name
+         path = bp.root_path + '/data/' + subject_name
+         rmtree(path, True)
          return jsonify({"message":"删除成功" })
      
 @bp.route('/upload/<subject_name>/<dirname>', methods=['POST'])
 def upload_file(subject_name, dirname):
-    print(subject_name, dirname)
-    print(request.files)
-
     subject_name = urllib.parse.unquote(request.headers[subject_name])
     dirname =  urllib.parse.unquote(request.headers[dirname])
-    path = bp.root_path + '/data/' + subject_name + '/'+dirname
-    print(path)
-   
+    path = bp.root_path + '/data/' + subject_name + '/'+dirname   
     l = len(os.listdir(path))
     print("l=", l)
     if dirname != "精彩瞬间":
@@ -290,6 +273,15 @@ def add_subject_info():
     res = User.query.filter_by(subject_name=subject_name).first()
     res.teacher_info = teacher_info
     res.subject_info = subject_info
+    tpl = DocxTemplate(bp.root_path + '/tmp.docx') 
+    context ={
+        "subject_name":subject_name,
+        "teacher_info": teacher_info,
+        "subject_info": subject_info
+    }
+    tpl.render(context)
+    tpl.save("{}/data/{}/{}社团及老师简介.docx".format(bp.root_path,subject_name,subject_name))
+    
     db.session.commit()
     return "修改成功"
 
@@ -305,10 +297,32 @@ def get_user_infos():
     back_url = json['back_url']
     respone = dict()
     base_path = bp.root_path + '/data/' + subject_name 
-    tx = os.listdir(base_path+'/教师风采')
-    tx = tx[0]
+    ja = base_path + '/课时教案'
+    jh= base_path + '/社团计划'
+    ts =  base_path + '/特色活动方案'
+    tstp = base_path + '/特色活动图片'
+    jcsj = base_path + '/精彩瞬间'
+    zj = base_path + '/社团总结'
+    tx = base_path+'/教师风采'
     respone['base_url'] = back_url+'/'+base_path
-    respone['tx'] = tx
+    respone['tx'] =  os.listdir(tx)
+    respone['jiaoan'] = os.listdir(ja)
+    respone['jihua'] = os.listdir(jh)
     respone['subject_info'] = subject_info
     respone['teacher_info'] =teacher_info
+    respone['tesefa'] = os.listdir(ts)
+    respone['shunjian'] = os.listdir(jcsj)
+    respone['tesetupian'] = os.listdir(tstp)
+    respone['zongjie'] = os.listdir(zj)
     return jsonify(respone)
+
+
+@bp.route('/remove_resource', methods=['POST'])
+def remove_resource():
+    data = request.get_json()
+    subject_name = data['subject_name']
+    dir_name =  urllib.parse.unquote(  data['dir_name'])
+    image_name = data['image_name']
+    file_path = "{}/data/{}/{}/{}".format(bp.root_path, subject_name, dir_name, image_name)
+    os.remove(file_path)
+    return ""
