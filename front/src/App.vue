@@ -64,7 +64,7 @@ export default {
   data() {
     return {
       activeIndex2: "1",
-      isRouterAlive: true
+      isRouterAlive: true,
     };
   },
   provide(){
@@ -91,26 +91,29 @@ export default {
     }
   },
   computed:{
-    logined(){
-      let token = this.$store.state.token
-      if(token!="")
-        return true
-      else 
-         return false
-    },
    role(){
     return this.$store.state.role
+   },
+   logined:{
+    get(){
+    return this.$store.state.logined
+   }, 
+   set(val){
+    this.$store.state.logined = val
    }
+   }
+
   },
   mounted(){
     let token = localStorage.getItem('token')
     let role = localStorage.getItem('role')
     this.$store.commit('LOGIN', {token:token, role:role})
     if(role==0)
-      router.replace('/adminhome')
-    
+      router.replace('/adminhome') 
+    if(this.$store.state.logind == false)
+      router.replace('/login')
   }
-};
+}
 </script>
 <style scoped>
 .login {

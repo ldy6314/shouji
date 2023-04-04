@@ -4,27 +4,31 @@
  <el-upload
   class="upload-demo"
   ref="upload"
-  action="http://127.0.0.1:5000/upload/subject_name/dirname"
+  :action="request_url"
   :on-preview="handlePreview"
   :on-remove="handleRemove"
   :file-list="fileList"
   :headers="set_headers"
   :multiple="true"
   :limit ="1"
+  :before-upload="beforeUpload"
+  :on-success="show_success"
   :auto-upload="false">
 
   <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
   <el-button style="margin-left: 10px;" size="small" type="success"  @click="submitUpload">上传到服务器</el-button>
-  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+  <div slot="tip" class="el-upload__tip">只能上传doc/docx文件</div>
 </el-upload>
  </div>
 </template>
 
 <script>
+import { Message } from 'element-ui';
  export default {
     data() {
       return {
         fileList:[],
+        request_url: this.$store.state.back_url + '/upload/subject_name/dirname', 
         set_headers:  {
           token: localStorage.getItem('token'),
           subject_name: encodeURIComponent(localStorage.getItem('subject_name')),
@@ -44,6 +48,19 @@
       },
       handleChange(){
       },
+      show_success(){
+      this.$message.success('上传成功')
+    },
+      beforeUpload(file){
+     if(file.type!=='application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&  file.type!=='application/msword'){
+       Message({
+          message: "只能选择.docx文件或者.doc文件",
+          type:"warning"
+        })
+        return false
+     }
+     return true
+    }
   
     },
   }

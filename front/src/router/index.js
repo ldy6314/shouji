@@ -11,73 +11,68 @@ import ZongJie from '@/components/ZongJie'
 import JiHua from '@/components/JiHua'
 import JianJie from '@/components/JianJie'
 import AdminHome from '@/components/AdminHome'
-import AdminVue from '@/components/AdminVue'
 import AccountVue from '@/components/AccountVue'
 
 Vue.use(VueRouter)
 
 const routes = [{
-        path: '/',
-        name: 'gailan',
-        component: GaiLan
-    },
-    {
-        path: '/adminhome',
-        name: 'adminhome',
-        component: AdminHome
-    },
-    {
-        path: '/account',
-        name: 'account',
-        component: AccountVue
-    },
-    {
-        path: '/admin',
-        name: 'admin',
-        component: AdminVue
-    },
-    {
-        path: '/login',
-        name: 'login',
-        component: LoginView
+    path: '/',
+    name: 'gailan',
+    component: GaiLan
+},
+{
+    path: '/adminhome',
+    name: 'adminhome',
+    component: AdminHome
+},
+{
+    path: '/account',
+    name: 'account',
+    component: AccountVue
+},
 
-    },
-    {
-        path: '/regist',
-        name: 'regist',
-        component: RegistVue
+{
+    path: '/login',
+    name: 'login',
+    component: LoginView
 
-    },
-    {
-        path: '/jiaoan',
-        name: 'jiaoan',
-        component: JiaoAn
-    },
-    {
-        path: '/jihua',
-        name: 'jihua',
-        component: JiHua
-    },
-    {
-        path: '/shunjian',
-        name: 'shunjian',
-        component: ShunJian
-    },
-    {
-        path: '/zongjie',
-        name: 'zongjie',
-        component: ZongJie
-    },
-    {
-        path: '/tese',
-        name: 'tese',
-        component: TeSe
-    },
-    {
-        path: '/jianjie',
-        name: 'jianjie',
-        component: JianJie
-    }
+},
+{
+    path: '/regist',
+    name: 'regist',
+    component: RegistVue
+
+},
+{
+    path: '/jiaoan',
+    name: 'jiaoan',
+    component: JiaoAn
+},
+{
+    path: '/jihua',
+    name: 'jihua',
+    component: JiHua
+},
+{
+    path: '/shunjian',
+    name: 'shunjian',
+    component: ShunJian
+},
+{
+    path: '/zongjie',
+    name: 'zongjie',
+    component: ZongJie
+},
+{
+    path: '/tese',
+    name: 'tese',
+    component: TeSe
+},
+{
+    path: '/jianjie',
+    name: 'jianjie',
+    component: JianJie
+}
 
 
 ]

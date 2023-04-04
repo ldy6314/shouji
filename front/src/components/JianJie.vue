@@ -3,7 +3,7 @@
     <h3>教师风采</h3>
     <el-upload
       class="avatar-uploader"
-      action="http://127.0.0.1:5000/upload/subject_name/dirname"
+      :action="request_url"
       :show-file-list="false"
       :on-success="handleAvatarSuccess"
       :before-upload="beforeAvatarUpload"
@@ -55,6 +55,7 @@ export default {
       textarea: "",
       textarea2: " ",
       imageUrl: "",
+      request_url: this.$store.state.back_url + "/upload/subject_name/dirname", 
        set_headers:  {
           token: localStorage.getItem('token'),
           subject_name: encodeURIComponent(localStorage.getItem('subject_name')),
@@ -64,7 +65,6 @@ export default {
   },
   methods: {
     handleAvatarSuccess(res, file) {
-      alert(2);
       this.imageUrl = URL.createObjectURL(file.raw);
     },
     add_subject_info(){
@@ -72,7 +72,7 @@ export default {
       formData.append('teacher_info', this.textarea)
       formData.append('subject_info', this.textarea2)
       formData.append('subject_name',localStorage.getItem('subject_name'))
-      _axios.post('http://127.0.0.1:5000/add_subject_info',formData
+      _axios.post('/add_subject_info',formData
       ).then(
         success=>{
           Message({
@@ -91,12 +91,10 @@ export default {
       const isLt2M = file.size / 1024 / 1024 < 10;
 
       if (!isJPG) {
-        alert("上传头像图片只能是 JPG 格式!");
         this.$message.error("上传头像图片只能是 JPG 格式!");
       }
       if (!isLt2M) {
-        alert(this.$message.error("上传头像图片大小不能超过 10MB!"));
-        this.$message.error("上传头像图片大小不能超过 2MsB!");
+        this.$message.error("上传头像图片大小不能超过 10MsB!");
       }
       return isJPG && isLt2M;
     },

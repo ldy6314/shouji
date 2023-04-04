@@ -65,7 +65,7 @@ export default {
                account:this.form.username,
                password:this.form.password
             }
-            _axios.post('http://127.0.0.1:5000/login', data).then(
+            _axios.post('/login', data).then(
               success=>{
                 localStorage.setItem('token', success.token)
                 localStorage.setItem('subject_name', success.subject_name)
@@ -73,7 +73,7 @@ export default {
                 if(success.role==1)
                   router.push('/')
                 else
-                  router.push('/adminhome', ()=>{}, ()=>{})
+                  router.push('/adminhome').catch(err=>{err})
                 this.$store.commit("LOGIN",{'token': success.token, 'role':success.role})
                 Message({
                   message: "登录成功",

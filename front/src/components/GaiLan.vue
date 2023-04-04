@@ -23,13 +23,6 @@
           <span>{{ scope.row.filename }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <i class="el-icon-download"  type="primary"
-            @click="handleEdit(scope.$index, scope.row)"></i>
-            <i class="el-icon-delete"  @click="handleDelete(scope.$index, scope.row)"></i>
-        </template>
-      </el-table-column>
     </el-table>
     <h3>社团教案</h3>
     <el-table :data="tableData2" style="width: 100%">
@@ -45,8 +38,6 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <i class="el-icon-edit"  type="primary"
-            @click="handleEdit(scope.$index, scope.row)"></i>
             <i class="el-icon-delete"  @click="removeimage(scope.row.name)"></i>
         </template>
       </el-table-column>
@@ -88,11 +79,12 @@
 <script>
 import _axios from '@/utils/_axios';
 import { Message } from 'element-ui';
+import router from '@/router';
+
 export default {
   inject: ['reload'],
   data() {
     return {
-      backend_url: "http://127.0.0.1:5000/get_img/",
       subject_name: "",
       shunjian_list: [],
       tese_list:[],
@@ -111,10 +103,8 @@ export default {
       console.log(index, row);
     },
     removeimage(item) {
-      console.log(item)
       let a = item.split("/");
-      console.log(a)
-      let image_name = a[a.length-1]
+     let image_name = a[a.length-1]
       let dir = a[a.length-3]
       let dir_name=""
       if(dir == "get_sj")
@@ -148,8 +138,13 @@ export default {
       alert(item);
     },
   },
-
   mounted() {
+    let token = localStorage.getItem('token')
+    if(!token){
+       router.push('/login')
+       this.$store.state.logined = false
+       return 
+      }
     let data={
       subject_name: localStorage.getItem('subject_name'),
       back_url: this.$store.state.back_url

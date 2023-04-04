@@ -2,9 +2,10 @@
   <div>
     <h3>上传照片</h3>
     <el-upload
-  action="http://127.0.0.1:5000/upload/subject_name/dirname"
+  :action="request_url"
   list-type="picture-card"
   :on-preview="handlePictureCardPreview"
+  :before-upload="beforeUpload1"
   :headers="set_headers"
   :on-remove="handleRemove">
   <i class="el-icon-plus"></i>
@@ -22,6 +23,8 @@
     data() {
       return {
         dialogImageUrl: '',
+        request_url: this.$store.state.back_url + '/upload/subject_name/dirname', 
+
         dialogVisible: false,
         set_headers:  {
           token: localStorage.getItem('token'),
@@ -38,7 +41,18 @@
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
       },
+      beforeUpload1(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 10;
 
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 10MsB!");
+      }
+      return isJPG && isLt2M;
+    },
     }
   }
 </script>

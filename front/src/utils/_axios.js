@@ -1,9 +1,9 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
-
+import { back_url } from './config'
 /****** 创建axios实例 ******/
 const _axios = axios.create({
-    baseURL: "http://127.0.0.1:5000",
+    baseURL: back_url,
     timeout: 5000 // 请求超时时间
 })
 

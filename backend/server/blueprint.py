@@ -47,12 +47,13 @@ def get_admin_infos():
     key_dic = {"教师风采":"fengcai","课时教案":"jiaoan", "社团计划":"jihua", "社团总结":"zongjie", "特色活动方案":"tese", "特色活动图片":"tesetp","精彩瞬间":"shunjian"}
     path = bp.root_path + '/data/'
     response = []
-    lst= os.listdir(path)
-    for subject in lst:
-        print(subject)
-        in_dict = dict()
-        obj = {'subject_name':subject, 'content':in_dict}
-        in_path = path + '/' + subject
+    res = User.query.filter_by(role=1).all()
+    for i in res:
+        print(i.subject_name, i.teacher_name)
+        subject_name = i.subject_name
+        teacher_name = i.teacher_name
+        obj = {'subject_name':subject_name, 'teacher_name':teacher_name}
+        in_path = path + '/' + subject_name
         lst1 = os.listdir(in_path)
         for subdir in lst1:
             in_in_path = in_path + '/' + subdir
@@ -61,10 +62,8 @@ def get_admin_infos():
             except Exception as e:
                 print(e)
             else:
-                in_dict[key_dic[subdir]] = in_list  
+                obj[key_dic[subdir]] = in_list  
         response.append(obj)
-        print(obj)
-       
     return jsonify(response)
 
 @bp.route("/get_userlist", methods=['GET'])
@@ -80,7 +79,6 @@ def get_userlist():
 @bp.before_request
 def judge_login():
     token = request.headers.get('token')
-    print("token",token)
     if not token:
         g.current_user = None
         g.login_message = '尚未登录'
@@ -92,7 +90,6 @@ def judge_login():
         else:
             g.current_user = res[1]['userid']
             g.login_message = '已登录'
-    print('login_message:', g.login_message, 'current_usr=', g.current_user)
 
 
 def login_required(func):
@@ -204,16 +201,15 @@ def upload_users():
     file.save(file.filename)
     wb = load_workbook(file.filename)
     st = wb.worksheets[0]
-    rows = st.max_row
-    cols = st.max_column
     iter = st.iter_rows(min_row=3)
     succ = []
     fail=[]
     for i in iter:
         infos = list(map(lambda x:x.value, i))
         username, pwd, teacher_name, subject_name, role = infos
-        pwd =str(pwd)
         print(infos)
+        if(type(pwd)==int):
+            pwd = str(pwd)
         try:
              new_user = User(
                     role = role,
@@ -283,7 +279,6 @@ def upload_file(subject_name, dirname):
     dirname =  urllib.parse.unquote(request.headers[dirname])
     path = bp.root_path + '/data/' + subject_name + '/'+dirname   
     l = len(os.listdir(path))
-    print("l=", l)
     if dirname != "精彩瞬间":
         if l:
             files = os.listdir(path)

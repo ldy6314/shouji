@@ -4,7 +4,7 @@
     <el-upload
       class="upload-demo"
       ref="upload"
-      action="http://127.0.0.1:5000/upload_users"
+      :action="request_url"
       :on-preview="handlePreview"
       :on-remove="handleRemove"
       :file-list="fileList"
@@ -106,6 +106,7 @@ export default {
   inject:['reload'],
   data() {
     return {
+      request_url: this.$store.state.back_url + '/upload_users', 
       fileList: [],
       formInline: {
         user: "",
@@ -151,7 +152,7 @@ export default {
       if (username == "admin") return;
       if (confirm("确定要重置密码？")) {
         let data = { username: username };
-        _axios.post("http://127.0.0.1:5000/reset_password", data).then(
+        _axios.post("reset_password", data).then(
           (success) => {
             success;
             alert("密码已经重置为88888888");
@@ -199,7 +200,7 @@ export default {
     },
   },
   mounted() {
-    _axios.get("http://127.0.0.1:5000/get_userlist").then(
+    _axios.get("/get_userlist").then(
       (success) => {
         this.userlist = success;
       },
